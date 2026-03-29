@@ -281,6 +281,12 @@ footer span{color:rgba(255,255,255,0.65)}
     </div>
     <div class="nav-right">
       <div class="nav-info" id="navInfo"><b>Laporan KPI Teras 2</b><br>—</div>
+      <select id="quarterOverride" onchange="updateQuarter()" style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:7px;padding:4px 8px;font-size:9px;font-family:var(--font);cursor:pointer;display:none">
+        <option value="0">Q1 (Jan–Mac)</option>
+        <option value="1">Q2 (Apr–Jun)</option>
+        <option value="2">Q3 (Jul–Sep)</option>
+        <option value="3">Q4 (Okt–Dis)</option>
+      </select>
       <div class="pdf-wrap">
         <button class="pdf-btn" onclick="togglePdfMenu()" id="pdfBtn">⬇ Jana Laporan PDF</button>
         <div class="pdf-menu" id="pdfMenu">
@@ -549,7 +555,7 @@ function parseAndRender(rows, sheetName) {
   const lastQ = activeQ.length > 0 ? activeQ[activeQ.length-1] : 0;
   const qLabels = ['Q1 (Jan–Mac)','Q2 (Apr–Jun)','Q3 (Jul–Sep)','Q4 (Okt–Dis)'];
   const qShort = ['Q1','Q2','Q3','Q4'];
-  const quarterLabel = activeQ.map(i=>qShort[i]).join(', ');
+  const quarterLabel = qShort[lastQ]; // Show latest quarter only
   const totalPI = ALL_PI.length;
   const sasaranPI = ALL_PI.filter(d=>d.t>0).length;
   const bonusPIs = ALL_PI.filter(d=>d.bonus);
@@ -599,6 +605,10 @@ function parseAndRender(rows, sheetName) {
 
   // Show dashboard
   updateNavFacultyLogo();
+  // Show quarter selector and set to detected last quarter
+  var qs = document.getElementById('quarterOverride');
+  qs.value = lastQ;
+  qs.style.display = 'block';
   document.getElementById('uploadScreen').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
 }
@@ -846,6 +856,20 @@ function updateNavFacultyLogo() {
   }
 }
 
+function updateQuarter(){
+  var qs = document.getElementById('quarterOverride');
+  var qi = parseInt(qs.value);
+  var qLabels2 = ['Q1 (Jan-Mac)','Q2 (Apr-Jun)','Q3 (Jul-Sep)','Q4 (Okt-Dis)'];
+  var tahun = document.getElementById('navInfo').innerText.match(/[0-9]{4}/);
+  var year = tahun ? tahun[0] : new Date().getFullYear();
+  // Update navInfo display
+  document.getElementById('navInfo').innerHTML = '<b>Laporan KPI Teras 2</b><br>'+qLabels2[qi]+' · '+year;
+  // Update p2italic
+  var totalPI = ALL_PI.length;
+  var sasaranPI = PI46().length;
+  document.getElementById('p2Italic').textContent = 'Total PI Teras 2: '+totalPI+' | Total PI Sasaran: '+sasaranPI+' | '+qLabels2[qi]+' '+year;
+}
+
 function resetDashboard(){
   ALL_PI=[];workbook=null;
   document.getElementById('dashboard').style.display='none';
@@ -862,6 +886,7 @@ function resetDashboard(){
   sheetSelectWrap.style.display='none';
   uploadError.style.display='none';
   go(1);
+  document.getElementById('quarterOverride').style.display='none';
 }
 
 // ===== PDF GENERATION (pure jsPDF — no html2canvas) =====
