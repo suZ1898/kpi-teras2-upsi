@@ -875,6 +875,8 @@ document.addEventListener('click',function(e){
 function printPage(target){
   document.getElementById('pdfMenu').classList.remove('open');
   if(!ALL_PI||ALL_PI.length===0){alert('Sila muatkan data Excel terlebih dahulu.');return;}
+  // Use uploaded faculty logo if available, else use default META logo
+  var FACULTY_LOGO = facultyLogoDataUrl && facultyLogoDataUrl.length > 0 ? facultyLogoDataUrl : META_B64;
 
   var meta = getPDFMeta();
   var pi = PI46();
@@ -979,7 +981,7 @@ function printPage(target){
       '<div class="topnav" style="position:relative;margin-bottom:16px">'+
         '<div class="brand">'+
           '<img src="'+UPSI_B64+'" alt="UPSI" class="light-bg">'+
-          '<img src="'+META_B64+'" alt="META">'+
+          '<img src="'+FACULTY_LOGO+'" alt="Logo Fakulti">'+
           '<div class="brand-text"><div class="brand-name">'+meta.faculty+'</div>'+
           '<div class="brand-sub">Universiti Pendidikan Sultan Idris</div></div>'+
         '</div>'+
@@ -1093,7 +1095,7 @@ function printPage(target){
       '<div class="topnav" style="position:relative;margin-bottom:14px">'+
         '<div class="brand">'+
           '<img src="'+UPSI_B64+'" alt="UPSI" class="light-bg">'+
-          '<img src="'+META_B64+'" alt="META">'+
+          '<img src="'+FACULTY_LOGO+'" alt="Logo Fakulti">'+
           '<div class="brand-text"><div class="brand-name">'+meta.faculty+'</div>'+
           '<div class="brand-sub">Universiti Pendidikan Sultan Idris</div></div>'+
         '</div>'+
